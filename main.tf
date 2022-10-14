@@ -7,3 +7,14 @@ resource "aws_vpc" "fls_vpc" {
     Name = "fls_vpc-dev"
   }
 }
+
+resource "aws_subnet" "flc_public_subnet" {
+  vpc_id                  = aws_vpc.fls_vpc.id
+  cidr_block              = "10.0.1.0/24"
+  map_public_ip_on_launch = true
+  availability_zone       = "ap-southeast-1a"
+
+  tags = {
+    Name = "flc_public_subnet-dev"
+  }
+}
