@@ -66,3 +66,26 @@ resource "aws_security_group" "fls_sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 }
+
+resource "aws_key_pair" "fls_auth_key" {
+  key_name   = "fls_auth_key-dev"
+  public_key = file("fls_auth_key.pub")
+}
+
+resource "aws_instance" "fls_server" {
+  ami                         = data.aws_ami.fls_server_ami.id
+  instance_type               = "t2.micro"
+  key_name                    = aws_key_pair.fls_auth_key.key_name
+  associate_public_ip_address = true
+  subnet_id                   = aws_subnet.flc_public_subnet.id
+  vpc_security_group_ids      = [aws_security_group.fls_sg.id]
+  user_data                   = file("userdata.tpl")
+
+  root_block_device {
+    volume_size = 8
+  }
+
+  tags = {
+    Name = "fls_server-dev"
+  }
+}
