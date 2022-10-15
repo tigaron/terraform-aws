@@ -45,3 +45,24 @@ resource "aws_route_table_association" "fls_public_rta" {
   subnet_id      = aws_subnet.flc_public_subnet.id
   route_table_id = aws_route_table.fls_public_rt.id
 }
+
+resource "aws_security_group" "fls_sg" {
+  name        = "fls_sg-dev"
+  description = "fls_sg-dev"
+  vpc_id      = aws_vpc.fls_vpc.id
+
+  ingress {
+    description = "SSH"
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = var.workstation_ip
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
