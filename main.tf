@@ -26,3 +26,22 @@ resource "aws_internet_gateway" "fls_igw" {
     Name = "fls_igw-dev"
   }
 }
+
+resource "aws_route_table" "fls_public_rt" {
+  vpc_id = aws_vpc.fls_vpc.id
+
+  tags = {
+    Name = "fls_public_rt-dev"
+  }
+}
+
+resource "aws_route" "fls_default_route" {
+  route_table_id         = aws_route_table.fls_public_rt.id
+  destination_cidr_block = "0.0.0.0/0"
+  gateway_id             = aws_internet_gateway.fls_igw.id
+}
+
+resource "aws_route_table_association" "fls_public_rta" {
+  subnet_id      = aws_subnet.flc_public_subnet.id
+  route_table_id = aws_route_table.fls_public_rt.id
+}
