@@ -18,3 +18,11 @@ resource "aws_subnet" "flc_public_subnet" {
     Name = "flc_public_subnet-dev"
   }
 }
+
+resource "aws_internet_gateway" "fls_igw" {
+  vpc_id = aws_vpc.fls_vpc.id
+
+  tags = {
+    Name = "fls_igw-dev"
+  }
+}
